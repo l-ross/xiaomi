@@ -13,3 +13,5 @@
 
 # IDE directories
 .idea/
+
+bin/test/*
