@@ -21,7 +21,8 @@ func TestIntegration(t *testing.T) {
 	v, err := New(c)
 	require.NoError(t, err)
 
-	l, err := v.SerialNumber()
+	//err = v.StartCharge()
+	l, err := v.FirmwareFeatures()
 	require.NoError(t, err)
 
 	spew.Dump(l)

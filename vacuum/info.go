@@ -74,6 +74,9 @@ func (v *Vacuum) Locale() (*Locale, error) {
 	return ret[0], nil
 }
 
+// FirmwareFeatures retrieves the enabled features of this vacuum.
+//
+// The known features are available as FeatureCode constants.
 func (v *Vacuum) FirmwareFeatures() ([]int, error) {
 	ret := make([]int, 0)
 
@@ -88,8 +91,10 @@ func (v *Vacuum) FirmwareFeatures() ([]int, error) {
 type Status struct {
 	MessageVersion  int `json:"msg_ver"`
 	MessageSequence int `json:"msg_seq"`
-	State           int `json:"state"`
-	ErrorCode       int `json:"error_code"`
+	// See StatusCode for the known vacuum states.
+	State int `json:"state"`
+	// See ErrorCode for the known vacuum errors.
+	ErrorCode int `json:"error_code"`
 
 	Battery                int `json:"battery"`
 	CleanArea              int `json:"clean_area"`
