@@ -1,15 +1,24 @@
 package vacuum
 
 import (
+	"errors"
 	"time"
 
 	"github.com/l-ross/miio/client"
 )
 
+var (
+	ErrUnexpectedResponse = errors.New("unexpected response")
+)
+
 type Vacuum struct {
-	client *client.Client
+	client iClient
 
 	id int64
+}
+
+type iClient interface {
+	Send(payload []byte) ([]byte, error)
 }
 
 func New(c *client.Client) (*Vacuum, error) {
@@ -19,4 +28,13 @@ func New(c *client.Client) (*Vacuum, error) {
 	}
 
 	return v, nil
+}
+
+type mockClient struct {
+	rsp []byte
+	err error
+}
+
+func (c *mockClient) Send(payload []byte) ([]byte, error) {
+	return c.rsp, c.err
 }
