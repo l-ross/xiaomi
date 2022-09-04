@@ -2,6 +2,8 @@ github.com/ViRb3/slicewriteseek v0.0.0-20210322184108-555fdf7b118b h1:oqO18EP5z6
 github.com/ViRb3/slicewriteseek v0.0.0-20210322184108-555fdf7b118b/go.mod h1:cKbiQp/01P9jp1Dd+Ti35mz2+UUk/Z9dYT+DXIrVms8=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/l-ross/miio v0.0.0-20220604215717-fd508ae15e89 h1:xJMclFQTgQR0Z9jevLbnkRRXWOid0sUT27ZRo30yawU=
+github.com/l-ross/miio v0.0.0-20220604215717-fd508ae15e89/go.mod h1:kiRAM4IQ9fHzNHID+D4laJWuzDjztQkGdP0ZYzV3QRg=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

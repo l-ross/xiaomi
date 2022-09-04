@@ -1,6 +1,6 @@
 //go:build integration
 
-package client
+package miio
 
 import (
 	"encoding/json"

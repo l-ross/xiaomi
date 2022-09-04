@@ -1,6 +1,6 @@
-# MIIO
+# Xiaomi
 
-This package provides a Golang implementation of the Xiaomi MIIO protocol. The definition of this
+This repo provides a collection of Golang libraries relating to Xiaomi products:
+- `miio` - Implementation of the Xiaomi MIIO protocol. The definition of this
 protocol can be found [here](https://github.com/ctrysbita/miio-dart)
-
-An example of using this library can be found in `client_integration_test.go`
+- `vacuum` - Library for communicating

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/l-ross/miio/client"
+	"github.com/l-ross/xiaomi/miio"
 )
 
 var (
@@ -21,7 +21,7 @@ type iClient interface {
 	Send(payload []byte) ([]byte, error)
 }
 
-func New(c *client.Client) (*Vacuum, error) {
+func New(c *miio.Client) (*Vacuum, error) {
 	v := &Vacuum{
 		client: c,
 		id:     time.Now().Unix(),
