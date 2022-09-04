@@ -21,9 +21,9 @@
 | `get_network_info`          |Y|
 | `get_serial_number`         |Y|
 | `set_lab_status`            ||
-| `app_rc_start`              ||
-| `app_rc_end`                ||
-| `app_rc_move`               ||
+| `app_rc_start`              |Y|
+| `app_rc_end`                |Y|
+| `app_rc_move`               |Y|
 | `find_me`                   |Y|
 | `get_consumable`            ||
 | `reset_consumable`          ||
