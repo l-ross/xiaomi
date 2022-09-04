@@ -1,3 +1,4 @@
+// Package miio providea a Golang implementation of the Xiaomi MIIO protocol
 package miio
 
 import (
@@ -13,6 +14,12 @@ import (
 	"net"
 	"sync"
 	"time"
+)
+
+const (
+	DefaultIP          = "192.168.1.1"
+	DefaultPort        = 54321
+	DefaultSendTimeout = 5 * time.Second
 )
 
 // A Client for talking to a device using the Xiaomi MIIO protocol
@@ -36,13 +43,13 @@ type Options struct {
 
 type Option func(*Options) error
 
-// DefaultOptions defines the default Options for a Client. To override these provide the appropriate
+// defaultOptions defines the default Options for a Client. To override these provide the appropriate
 // Option when calling New.
-func DefaultOptions() *Options {
+func defaultOptions() *Options {
 	return &Options{
-		IP:          "192.168.1.100",
-		Port:        54321,
-		SendTimeout: 5 * time.Second,
+		IP:          DefaultIP,
+		Port:        DefaultPort,
+		SendTimeout: DefaultSendTimeout,
 	}
 }
 
@@ -85,7 +92,7 @@ func New(token string, opts ...Option) (*Client, error) {
 	c := &Client{
 		token:   t,
 		h:       md5.New(),
-		options: DefaultOptions(),
+		options: defaultOptions(),
 	}
 
 	for _, opt := range opts {
