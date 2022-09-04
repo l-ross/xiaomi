@@ -6,8 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
-	"github.com/l-ross/miio/client"
+	"github.com/l-ross/xiaomi/miio"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,15 +14,12 @@ func TestIntegration(t *testing.T) {
 	ip := os.Getenv("MIIO_IP")
 	token := os.Getenv("MIIO_TOKEN")
 
-	c, err := client.New(token, client.SetIP(ip))
+	c, err := miio.New(token, miio.SetIP(ip))
 	require.NoError(t, err)
 
 	v, err := New(c)
 	require.NoError(t, err)
 
-	//err = v.StartCharge()
-	l, err := v.FirmwareFeatures()
+	err = v.StartCharge()
 	require.NoError(t, err)
-
-	spew.Dump(l)
 }

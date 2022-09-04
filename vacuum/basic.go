@@ -20,6 +20,7 @@ func (v *Vacuum) Pause() error {
 	return v.doSimple("app_pause")
 }
 
+// StartCharge will start charging
 func (v *Vacuum) StartCharge() error {
 	return v.doSimple("app_charge")
 }

@@ -61,7 +61,7 @@ func (v *Vacuum) do(method string, params json.RawMessage, rsp interface{}) erro
 
 	// TODO: Check rawResponse
 
-	if rr.Result != nil {
+	if rr.Result != nil && rsp != nil {
 		err = json.Unmarshal(rr.Result, rsp)
 		if err != nil {
 			return err
