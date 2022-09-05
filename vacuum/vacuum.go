@@ -36,5 +36,15 @@ type mockClient struct {
 }
 
 func (c *mockClient) Send(payload []byte) ([]byte, error) {
+	// If the mock doesn't define a rsp then just return a default.
+	if c.rsp == nil {
+		c.rsp = []byte(`
+			{
+				"result": ["ok"],
+				"id": 1
+			}`,
+		)
+	}
+
 	return c.rsp, c.err
 }

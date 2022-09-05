@@ -1,5 +1,7 @@
 package vacuum
 
+import "encoding/json"
+
 // Start cleaning
 func (v *Vacuum) Start() error {
 	return v.doSimple("app_start")
@@ -72,4 +74,20 @@ func (v *Vacuum) GetDNDTimer() ([]DNDTimer, error) {
 	}
 
 	return timers, nil
+}
+
+type SetDNDTimerParams struct {
+	StartHour   int
+	StartMinute int
+	EndHour     int
+	EndMinutes  int
+}
+
+func (v *Vacuum) SetDNDTimer(params SetDNDTimerParams) error {
+	p, err := json.Marshal([]int{params.StartHour, params.StartMinute, params.EndHour, params.EndMinutes})
+	if err != nil {
+		return err
+	}
+
+	return v.do("set_dnd_timer", p, nil)
 }
