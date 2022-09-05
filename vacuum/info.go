@@ -20,14 +20,14 @@ type Info struct {
 }
 
 func (v *Vacuum) Info() (*Info, error) {
-	ret := &Info{}
+	rsp := &Info{}
 
-	err := v.do("miIO.info", nil, ret)
+	err := v.do("miIO.info", nil, rsp)
 	if err != nil {
 		return nil, err
 	}
 
-	return ret, nil
+	return rsp, nil
 }
 
 type WIFIStatus struct {
@@ -38,14 +38,14 @@ type WIFIStatus struct {
 }
 
 func (v *Vacuum) WIFIStatus() (*WIFIStatus, error) {
-	ret := &WIFIStatus{}
+	rsp := &WIFIStatus{}
 
-	err := v.do("miIO.wifi_assoc_state", nil, ret)
+	err := v.do("miIO.wifi_assoc_state", nil, rsp)
 	if err != nil {
 		return nil, err
 	}
 
-	return ret, nil
+	return rsp, nil
 }
 
 type Locale struct {
@@ -60,18 +60,18 @@ type Locale struct {
 }
 
 func (v *Vacuum) Locale() (*Locale, error) {
-	ret := make([]*Locale, 0)
+	rsp := make([]*Locale, 0)
 
-	err := v.do("app_get_locale", nil, &ret)
+	err := v.do("app_get_locale", nil, &rsp)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(ret) != 1 {
+	if len(rsp) != 1 {
 		return nil, ErrUnexpectedResponse
 	}
 
-	return ret[0], nil
+	return rsp[0], nil
 }
 
 // FirmwareFeatures retrieves the enabled features of this vacuum.
@@ -115,18 +115,18 @@ type Status struct {
 }
 
 func (v *Vacuum) Status() (*Status, error) {
-	ret := make([]*Status, 0)
+	rsp := make([]*Status, 0)
 
-	err := v.do("get_status", nil, &ret)
+	err := v.do("get_status", nil, &rsp)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(ret) != 1 {
+	if len(rsp) != 1 {
 		return nil, ErrUnexpectedResponse
 	}
 
-	return ret[0], nil
+	return rsp[0], nil
 }
 
 type InitialStatus struct {
@@ -136,18 +136,18 @@ type InitialStatus struct {
 }
 
 func (v *Vacuum) InitialStatus() (*InitialStatus, error) {
-	ret := make([]*InitialStatus, 0)
+	rsp := make([]*InitialStatus, 0)
 
-	err := v.do("app_get_init_status", nil, &ret)
+	err := v.do("app_get_init_status", nil, &rsp)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(ret) != 1 {
+	if len(rsp) != 1 {
 		return nil, ErrUnexpectedResponse
 	}
 
-	return ret[0], nil
+	return rsp[0], nil
 }
 
 type NetworkInfo struct {
@@ -159,14 +159,14 @@ type NetworkInfo struct {
 }
 
 func (v *Vacuum) NetworkInfo() (*NetworkInfo, error) {
-	ret := &NetworkInfo{}
+	rsp := &NetworkInfo{}
 
-	err := v.do("get_network_info", nil, ret)
+	err := v.do("get_network_info", nil, rsp)
 	if err != nil {
 		return nil, err
 	}
 
-	return ret, nil
+	return rsp, nil
 }
 
 type serialNumber struct {
@@ -174,16 +174,16 @@ type serialNumber struct {
 }
 
 func (v *Vacuum) SerialNumber() (string, error) {
-	ret := make([]*serialNumber, 0)
+	rsp := make([]*serialNumber, 0)
 
-	err := v.do("get_serial_number", nil, &ret)
+	err := v.do("get_serial_number", nil, &rsp)
 	if err != nil {
 		return "", err
 	}
 
-	if len(ret) != 1 {
+	if len(rsp) != 1 {
 		return "", ErrUnexpectedResponse
 	}
 
-	return ret[0].SerialNumber, nil
+	return rsp[0].SerialNumber, nil
 }

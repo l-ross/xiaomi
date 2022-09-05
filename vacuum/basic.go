@@ -59,10 +59,10 @@ func (v *Vacuum) GetDNDTimer() ([]DNDTimer, error) {
 		return nil, err
 	}
 
-	ret := make([]DNDTimer, len(rsp))
+	timers := make([]DNDTimer, len(rsp))
 
 	for i, d := range rsp {
-		ret[i] = DNDTimer{
+		timers[i] = DNDTimer{
 			Enabled:     d.Enabled == 1,
 			StartHour:   d.StartHour,
 			StartMinute: d.StartMinute,
@@ -71,5 +71,5 @@ func (v *Vacuum) GetDNDTimer() ([]DNDTimer, error) {
 		}
 	}
 
-	return ret, nil
+	return timers, nil
 }
