@@ -6,6 +6,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
+
 	"github.com/l-ross/xiaomi/miio"
 	"github.com/stretchr/testify/require"
 )
@@ -20,6 +22,8 @@ func TestIntegration(t *testing.T) {
 	v, err := New(c)
 	require.NoError(t, err)
 
-	err = v.StartCharge()
+	i, err := v.GetDNDTimer()
 	require.NoError(t, err)
+
+	spew.Dump(i)
 }

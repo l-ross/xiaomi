@@ -4,7 +4,7 @@
 | `app_stop`                  |Y|
 | `app_spot`                  |Y|
 | `app_pause`                 |Y|
-| `app_charge`                ||
+| `app_charge`                |Y|
 | `app_zoned_clean`           ||
 | `stop_zoned_clean`          ||
 | `resume_zoned_clean`        ||
@@ -13,9 +13,9 @@
 | `resume_segment_clean`      ||
 | `get_room_mapping`          ||
 | `app_goto_target`           ||
-| `app_wakeup_robot`          ||
+| `app_wakeup_robot`          |Y|
 | `app_get_locale`            |Y|
-| `app_get_init_status`       ||
+| `app_get_init_status`       |Y|
 | `get_status`                |Y|
 | `get_fw_features`           |Y|
 | `get_network_info`          |Y|
@@ -46,7 +46,7 @@
 | `get_recover_maps`          ||
 | `get_multi_maps_list`       ||
 | `load_multi_map`            ||
-| `get_dnd_timer`             ||
+| `get_dnd_timer`             |Y|
 | `set_dnd_timer`             ||
 | `close_dnd_timer`           ||
 | `get_timer`                 ||
