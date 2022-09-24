@@ -47,7 +47,7 @@
 | `get_multi_maps_list`       ||
 | `load_multi_map`            ||
 | `get_dnd_timer`             |Y|
-| `set_dnd_timer`             ||
+| `set_dnd_timer`             |Y|
 | `close_dnd_timer`           ||
 | `get_timer`                 ||
 | `set_timer`                 ||
