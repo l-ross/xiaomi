@@ -15,7 +15,7 @@ type RemoteMoveParams struct {
 	Angle float32 `json:"omega"`
 	// Velocity must be between -0.3 and 0.3
 	Velocity float32 `json:"velocity"`
-	// Sequence needs to increase with each instance of calling RemoteMove
+	// Sequence needs to increase with each remote move.
 	Sequence int `json:"seqnum"`
 	// Duration in ms
 	Duration int `json:"duration"`

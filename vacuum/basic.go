@@ -83,6 +83,7 @@ type SetDNDTimerParams struct {
 	EndMinutes  int
 }
 
+// SetDNDTimer sets the Do Not Disturb timers for the Vacuum.
 func (v *Vacuum) SetDNDTimer(params SetDNDTimerParams) error {
 	p, err := json.Marshal([]int{params.StartHour, params.StartMinute, params.EndHour, params.EndMinutes})
 	if err != nil {

@@ -19,6 +19,7 @@ type Info struct {
 	Life  int    `json:"life"`
 }
 
+// Info retrieves the hardware and network info of the Vacuum.
 func (v *Vacuum) Info() (*Info, error) {
 	rsp := &Info{}
 
@@ -114,6 +115,7 @@ type Status struct {
 	WaterBoxMode           int `json:"water_box_mode"`
 }
 
+// Status retrieve the over state of the Vacuum.
 func (v *Vacuum) Status() (*Status, error) {
 	rsp := make([]*Status, 0)
 
