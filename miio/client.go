@@ -29,8 +29,8 @@ type Client struct {
 	h hash.Hash
 
 	blockSize int
-	dec       cipher.BlockMode
-	enc       cipher.BlockMode
+	createEnc func() cipher.BlockMode
+	createDec func() cipher.BlockMode
 
 	options *Options
 }
@@ -112,8 +112,14 @@ func New(token string, opts ...Option) (*Client, error) {
 	}
 
 	c.blockSize = block.BlockSize()
-	c.dec = cipher.NewCBCDecrypter(block, iv)
-	c.enc = cipher.NewCBCEncrypter(block, iv)
+
+	c.createEnc = func() cipher.BlockMode {
+		return cipher.NewCBCEncrypter(block, iv)
+	}
+
+	c.createDec = func() cipher.BlockMode {
+		return cipher.NewCBCDecrypter(block, iv)
+	}
 
 	return c, nil
 }
@@ -241,7 +247,9 @@ func (c *Client) createRequest(deviceID uint32, stamp uint32, payload []byte) ([
 	if err != nil {
 		return nil, err
 	}
-	c.enc.CryptBlocks(payload, payload)
+
+	enc := c.createEnc()
+	enc.CryptBlocks(payload, payload)
 
 	// Construct request payload
 	d := newData()
@@ -252,6 +260,7 @@ func (c *Client) createRequest(deviceID uint32, stamp uint32, payload []byte) ([
 	d.writeUint32(0)
 	d.writeUint32(deviceID)
 	d.writeUint32(stamp)
+
 	// Write token in place of hash
 	d.write(c.token)
 	d.write(payload)
@@ -266,7 +275,7 @@ func (c *Client) createRequest(deviceID uint32, stamp uint32, payload []byte) ([
 func (c *Client) decodeResponse(rsp []byte) ([]byte, error) {
 	var err error
 
-	if len(rsp) <= 32 {
+	if len(rsp) < 32 {
 		return nil, fmt.Errorf("invalid response, expected at least 32 bytes but got %d", len(rsp))
 	}
 
@@ -296,7 +305,9 @@ func (c *Client) decodeResponse(rsp []byte) ([]byte, error) {
 	if len(body) == 0 {
 		return nil, errors.New("empty response body")
 	}
-	c.dec.CryptBlocks(body, body)
+
+	dec := c.createDec()
+	dec.CryptBlocks(body, body)
 
 	// Remove padding
 	body, err = c.pkcs7Unpad(body)
