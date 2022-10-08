@@ -19,7 +19,10 @@ func TestCreateRequestDecodeResponse(t *testing.T) {
 	c, err := New(token)
 	require.NoError(t, err)
 
-	req, err := c.createRequest(uint32(1), uint32(2), payload)
+	c.deviceID = 1
+	c.stamp = 2
+
+	req, err := c.createRequest(payload)
 	require.NoError(t, err)
 
 	rspPayload, err := c.decodeResponse(req)

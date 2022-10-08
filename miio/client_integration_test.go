@@ -24,7 +24,13 @@ func TestIntegration(t *testing.T) {
 	c, err := New(token, SetIP(ip))
 	require.NoError(t, err)
 
+	err = c.Connect()
+	require.NoError(t, err)
+
 	rsp, err := c.Send(payload)
+	require.NoError(t, err)
+
+	err = c.Close()
 	require.NoError(t, err)
 
 	rspBody := struct {

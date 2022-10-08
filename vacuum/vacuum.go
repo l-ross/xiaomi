@@ -22,6 +22,13 @@ type iClient interface {
 }
 
 func New(c *miio.Client) (*Vacuum, error) {
+	if !c.Connected() {
+		err := c.Connect()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	v := &Vacuum{
 		client: c,
 		id:     time.Now().Unix(),

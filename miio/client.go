@@ -13,13 +13,11 @@ import (
 	"hash"
 	"net"
 	"sync"
-	"time"
 )
 
 const (
-	DefaultIP          = "192.168.1.1"
-	DefaultPort        = 54321
-	DefaultSendTimeout = 5 * time.Second
+	DefaultIP   = "192.168.1.1"
+	DefaultPort = 54321
 )
 
 // A Client for talking to a device using the Xiaomi MIIO protocol
@@ -27,6 +25,12 @@ type Client struct {
 	token []byte
 
 	h hash.Hash
+
+	deviceID uint32
+	stamp    uint32
+
+	conn    net.Conn
+	rwMutex sync.RWMutex
 
 	blockSize int
 	createEnc func() cipher.BlockMode
@@ -36,9 +40,8 @@ type Client struct {
 }
 
 type Options struct {
-	IP          string
-	Port        int
-	SendTimeout time.Duration
+	IP   string
+	Port int
 }
 
 type Option func(*Options) error
@@ -47,9 +50,8 @@ type Option func(*Options) error
 // Option when calling New.
 func defaultOptions() *Options {
 	return &Options{
-		IP:          DefaultIP,
-		Port:        DefaultPort,
-		SendTimeout: DefaultSendTimeout,
+		IP:   DefaultIP,
+		Port: DefaultPort,
 	}
 }
 
@@ -69,12 +71,10 @@ func SetPort(port int) Option {
 	}
 }
 
-// SetSendTimeout specifies the timeout when Client.Send is called
-func SetSendTimeout(d time.Duration) Option {
-	return func(o *Options) error {
-		o.SendTimeout = d
-		return nil
-	}
+func (c *Client) Connected() bool {
+	c.rwMutex.RLock()
+	defer c.rwMutex.RUnlock()
+	return c.conn != nil
 }
 
 // New constructs a new Client
@@ -124,36 +124,67 @@ func New(token string, opts ...Option) (*Client, error) {
 	return c, nil
 }
 
-// Send will perform the necessary handshake and then send the provided payload, response data
-// is returned.
-func (c *Client) Send(payload []byte) ([]byte, error) {
+// Connect to the device.
+//
+// If Connect has already been called and Close has not then this is a no-op and will
+// re-use the existing connection.
+func (c *Client) Connect() error {
+	c.rwMutex.Lock()
+	defer c.rwMutex.Unlock()
+
+	if c.conn != nil {
+		return nil
+	}
+
 	conn, err := net.Dial("udp", fmt.Sprintf("%s:%d", c.options.IP, c.options.Port))
 	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-
-	err = conn.SetDeadline(time.Now().Add(c.options.SendTimeout))
-	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Send hello packet to receive device ID and stamp ID
 	deviceID, stamp, err := c.hello(conn)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	// Increment stamp
-	stamp++
+	c.deviceID = deviceID
+	c.stamp = stamp
+	c.conn = conn
+
+	return nil
+}
+
+// Close the connection to the device
+func (c *Client) Close() error {
+	c.rwMutex.Lock()
+	defer c.rwMutex.Unlock()
+
+	if c.conn == nil {
+		return nil
+	}
+
+	err := c.conn.Close()
+	c.conn = nil
+	return err
+}
+
+// Send will perform the necessary handshake and then send the provided payload, response data
+// is returned.
+func (c *Client) Send(payload []byte) ([]byte, error) {
+	c.rwMutex.RLock()
+	defer c.rwMutex.RUnlock()
+
+	if c.conn == nil {
+		return nil, errors.New("client is not connected")
+	}
 
 	// Create and send request
-	req, err := c.createRequest(deviceID, stamp, payload)
+	req, err := c.createRequest(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	sent, err := conn.Write(req)
+	sent, err := c.conn.Write(req)
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +207,7 @@ func (c *Client) Send(payload []byte) ([]byte, error) {
 	// Keep reading until we have the entire response
 	for x := uint16(0); x < rspLen; {
 		chunk := make([]byte, 4096)
-		read, err := conn.Read(chunk)
+		read, err := c.conn.Read(chunk)
 		if err != nil {
 			return nil, err
 		}
@@ -236,7 +267,7 @@ func (c *Client) hello(conn net.Conn) (uint32, uint32, error) {
 		nil
 }
 
-func (c *Client) createRequest(deviceID uint32, stamp uint32, payload []byte) ([]byte, error) {
+func (c *Client) createRequest(payload []byte) ([]byte, error) {
 	// Append null byte if it's missing from the payload.
 	if payload[len(payload)-1] != 0x00 {
 		payload = append(payload, 0x00)
@@ -258,8 +289,8 @@ func (c *Client) createRequest(deviceID uint32, stamp uint32, payload []byte) ([
 	d.writeUint16(uint16(len(payload) + 32))
 	// Always 0
 	d.writeUint32(0)
-	d.writeUint32(deviceID)
-	d.writeUint32(stamp)
+	d.writeUint32(c.deviceID)
+	d.writeUint32(c.stamp)
 
 	// Write token in place of hash
 	d.write(c.token)
@@ -268,6 +299,9 @@ func (c *Client) createRequest(deviceID uint32, stamp uint32, payload []byte) ([
 	// Calculate MD5 and overwrite token with it.
 	d.seek(16)
 	d.write(c.md5(d.bytes()))
+
+	// Increment stamp
+	c.stamp++
 
 	return d.bytes(), nil
 }
