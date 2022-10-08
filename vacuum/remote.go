@@ -24,8 +24,8 @@ type RemoteMoveParams struct {
 // RemoteMove sends the provided move commands.
 // RemoteStart must be called first and the vacuums should be in the ManualMode state.
 // The vacuums state can be checked via the Status method.
-func (v *Vacuum) RemoteMove(params []RemoteMoveParams) error {
-	p, err := json.Marshal(params)
+func (v *Vacuum) RemoteMove(params RemoteMoveParams) error {
+	p, err := json.Marshal([]RemoteMoveParams{params})
 	if err != nil {
 		return err
 	}
